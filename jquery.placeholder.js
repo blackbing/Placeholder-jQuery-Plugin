@@ -36,7 +36,9 @@
 		var $input = $(this);
 		if ($input.val() === $input.attr('placeholder') && $input.hasClass('placeholder')) {
 			if ($input.data('placeholder-password')) {
-				$input.hide().next().show().focus();
+				//$input.hide().next().show().focus();
+				//avoiding dom traversing by unsure dom structure
+				$input.hide().data('placeholder-src').show().focus();
 			} else {
 				$input.val('').removeClass('placeholder');
 			}
@@ -55,14 +57,18 @@
 						$replacement = $('<input>').attr($.extend(args($input[0]), { type: 'text' }));
 					}
 					$replacement
+						.removeAttr('id') //we don't need id, it will be confused by selector within id
 						.removeAttr('name')
 						.data('placeholder-password', true)
+						.data('placeholder-src', $input)
 						.bind('focus.placeholder', clearPlaceholder);
 					$input
 						.data('placeholder-textinput', $replacement)
 						.before($replacement);
 				}
-				$input = $input.hide().prev().show();
+				//$input = $input.hide().prev().show();
+				//avoiding dom traversing by unsure dom structure
+				$input = $input.hide().data('placeholder-textinput').show();
 			}
 			$input.addClass('placeholder').val($input.attr('placeholder'));
 		} else {
